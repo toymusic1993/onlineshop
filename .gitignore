@@ -1,0 +1,8 @@
+/nbproject/private/
+/tmp/*
+/logs/*
+/config/app.php
+.idea
+/download/*
+/webroot/mproduct/uploadfile/*
+/file/template/*
