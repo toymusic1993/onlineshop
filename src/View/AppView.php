@@ -4,11 +4,10 @@ namespace App\View;
 
 use BootstrapUI\View\UIView;
 use Cake\View\View;
-
+use BootstrapUI\View\UIViewTrait;
 class AppView extends View {
-
-    // In your AppView.php
-	public function initialize() {
-		$this->loadHelper('Paginator', ['templates' => 'paginator-templates']);
-	}
+	use UIViewTrait;
+    public function initialize() {
+    	$this->initializeUi(['layout'=>false]);
+    }
 }

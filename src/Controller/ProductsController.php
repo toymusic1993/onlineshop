@@ -4,56 +4,59 @@ namespace App\Controller;
 use Cake\ORM\TableRegistry;
 
 class ProductsController extends AppController {
-    var $helpers = array('Paginator','Html');
-    var $paginate = array();
-	
+    var $helpers  = array('Paginator','Html');
+    var $paginate = array('limit' => 15);
+
 	// Index
 	public function index() {
-		$products = TableRegistry::get('Products');
-		$query1 = $products->find();
-		$this->set('data1',$query1);
+		$this->loadModel('Categories');
+		$query = $this->Categories->find();
+		$this->set('list_category', $query);
+			
+		$list_products = $this->paginate();
+		$this->set('list_products', $list_products);
 
-		$categories = TableRegistry::get('Categories');
-		$query2 = $categories->find();
-		$this->set('data2',$query2);
+		//get data Best Seller
+		$this->loadModel('Order_Product');
+		$query2 = $this->Order_Product->find();
+		$result = $query2->select(['product_id','quantity' => $query2->func()->
+			sum('quantity')])->group('product_id')->order(['quantity'=>'DESC'])->limit(5);
+		
+		$best_sellers = array();
+
+		foreach ($result as $get_id) {
+			$best_sellers[] = $this->Products->find()->where(['id' => $get_id->product_id])->toArray();
+		}
+		$this->set('best_sellers', $best_sellers);
+		//pr($best_sellers);die();
 	}
 	
 	//Category
-	public function category() {
-		$products = TableRegistry::get('Products');
-		$query   = $products->find('all')->contain('Categories');
-		$this->set('data',$query);
-		$this->loadModel('Products');
+	public function categories($id = null) {
 		$this->loadModel('Categories');
-		$recentArticles = $this->Products->find('all', [
-			'id' => 1,
-			'name' => 'saotrucnuado'
-		]);
-		pr($recentArticles);
-		die();
-	}
-	
-	public function numberPages() {
-		$this->paginate = array('limit' => 2);
-		$data = $this->paginate('Products');
-		$this->set('data',$data);
-	}
-	
-	// Admin Products
-	public function adminProducts() {
-		$products = TableRegistry::get('Products');
-		$query = $products->find();
-		$this->set('data',$query);
-	}
+		$query = $this->Categories->find();
+		$query_name = $this->Categories->find()->select(['name', 'description'])->where(
+			['id' => $id]);
+		$this->set('data', $query);
+		$this->set('get_name', $query_name);
 
+		$this->loadModel('Products');
+		$query = $this->Products->find('all')->where(['category_id' => $id]);
+		$this->set('data1', $this->paginate($query));	
+	}
+	
 	// Add Products
 	public function addProducts() {
+		$this->loadModel('Categories');
+		$query = $this->Categories->find();
+		$this->set('list_category', $query);
+		
 	  	$products = $this->Products->newEntity();
         if ($this->request->is('post')) {
             $products = $this->Products->patchEntity($products, $this->request->data);
             if ($this->Products->save($products)) {
                 $this->Flash->success(__('Lưu Sản Phẩm Thành Công.'));
-                return $this->redirect(['action' => 'adminproducts']);
+                return $this->redirect(['controller'=>'users','action' => 'adminproducts']);	
             }
             $this->Flash->error(__('Lưu Sản Phẩm Thất Bại'));
         }
@@ -62,12 +65,14 @@ class ProductsController extends AppController {
 
 	// Edit Products
 	public function editProducts($id = null) {
+		$this->loadModel('Categories');
+		$query = $this->Categories->find();
+		$this->set('list_category', $query);
         $products = $this->Products->get($id);
         if ($this->request->is(['post', 'put'])) {
             $this->Products->patchEntity($products, $this->request->data);
             if ($this->Products->save($products)) {
-                $this->Flash->success(__('Sửa Sản Phẩm Thành Công'));
-                return $this->redirect(['action' => 'adminproducts']);
+                return $this->redirect(['controller' => 'users','action' => 'adminproducts']);
             }
 			$this->Flash->error(__('Sửa Sản Phẩm Thất Bại'));
         }
@@ -76,11 +81,61 @@ class ProductsController extends AppController {
 
 	// Delete Products
 	public function deleteProducts($id = null) {
-	    $this->request->allowMethod(['post','delete']);
+	    $this->request->allowMethod(['post', 'delete']);
 		$products = $this->Products->get($id);
 		if ($this->Products->delete($products)) {
-		    $this->Flash->success(__('Sản Phẩm Có ID : {0} Đã Bị Xóa.', h($id)));
-        	return $this->redirect(['action' => 'adminproducts']);
+		    $this->Flash->success(__('Sản Phẩm Có ID : {0} Đã Bị Xóa.', $id));
+        	return $this->redirect(['controller'=>'users', 'action' => 'adminproducts']);
 		}
+	}
+
+	//Details Products
+	public function detail ($id = null) {
+		$this->loadModel('Categories');
+		$query_categories = $this->Categories->find();
+		$this->set('list_category', $query_categories);
+
+		$products = $this->Products->get($id);
+		$this->set('products', $products);
+
+		$preview = $this->loadModel('Product_Reviews');
+		$get = $preview->find()->select(['comment', 'rate'])->where(
+			['product_id' => $id])->limit(5);
+		$this->set('result', $get);
+	}
+	
+	//Checkout
+	public function checkout($id = null) {
+		$session  = $this->request->session();	 
+		$this->loadModel('Categories');
+		$query = $this->Categories->find();
+		$this->set('list_category', $query);
+		
+		$products = $this->Products->get($id);
+		if ($session->check('cart.'.$id)) {
+			$item = $session->read('cart.'.$id);
+			$item['quantity'] += 1;
+			$item['amount']    = $item['quantity'] * $item['price'];
+		} else {
+			$item = array(
+			'id' => $products->id,
+			'image' => $products->image_url,
+			'name' => $products->name,
+			'price' => $products->price,
+			'quantity' => 1,
+			'amount'   => $products->price
+			);
+		}
+		$session->write('cart.'.$id,$item);
+		$cart = $session->read('cart');
+		$totalamount = 0;
+		foreach ($cart as $product) {
+			$totalamount += $product['amount'];
+		}
+		$session->write('payment.total',$totalamount);
+		
+// Now you can read a array from Session
+		
+		$this->set('show', $session);
 	}
 }

@@ -6,10 +6,8 @@ use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
 class ProductsTable extends Table {
-	public function initialize(array $config) {
-		$this->belongsToMany('Categories', [
-			'joinTable' => 'category_id',
-		]);
+	public function initialize(array $config) {	
+		$this->hasOne('Categories');
 	}
 
 	public function validationDefault(Validator $validator) {
@@ -32,4 +30,9 @@ class ProductsTable extends Table {
             ->requirePresence('description');
         return $validator;
     }
+	public function getDataOrder() {
+		$sql = 'SELECT product_id, quantity FROM `order_product` ORDER BY quantity DESC LIMIT 5';
+		$result = $this->query($sql);
+		return $result;
+	}
 }

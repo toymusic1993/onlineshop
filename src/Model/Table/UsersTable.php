@@ -7,7 +7,9 @@ use Cake\Validation\Validator;
 
 class UsersTable extends Table {
 	public function initialize(array $config) {
-		$this->addBehavior('Timestamp');
+		$this->table('users');
+        $this->entityClass('App\Model\Entity\user');
+        $this->addBehavior('Timestamp');
 	}
 
 	public function validationDefault(Validator $validator) {
@@ -20,16 +22,5 @@ class UsersTable extends Table {
             ->requirePresence('email');
         return $validator;
     }
-
-    //Check Users Login
-    public function checkUsersLogin($email, $password) {
-        $sql = "SELECT * FROM users WHERE email = '$email' AND password ='$password'";
-        $result = $this->query($sql);
-        if(isset($result)){
-              return true;
-        }
-        return false;
-
-    }
-	
+    
 }

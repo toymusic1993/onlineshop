@@ -26,7 +26,7 @@ return [
 
    
     'Security' => [
-        'salt' => env('SECURITY_SALT', '1'),
+        'salt' => env('SECURITY_SALT', '__SALT__'),
     ],
 
     

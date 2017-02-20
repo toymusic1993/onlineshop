@@ -1,33 +1,48 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title></title>
-    <?php 
-        echo $this->Html->css('bootstrap');
-        echo $this->Html->script('jquery'); 
-    ?>
-</head>
-<body>
-	<div class="container">	
-	<h1 class="text-primary">Thêm Sản Phấm</h1>
-<?php
-    echo $this->Form->create($products);
-    echo $this->Form->input('name');
-    $options = ['1' => 'Sáo Dizi', '2' => 'Sáo Việt','3'=>'Sáo Bầu','4'=>'Tiêu'];
-	echo $this->Form->select('category_id', $options);
-    echo $this->Form->input('image_url');
-    echo $this->Form->input('price');
-    echo $this->Form->input('quantity');
-    $options = ['0' => 'Hết Hàng', '1' => 'Còn Hàng'];
-    echo $this->Form->select('status', $options, ['empty' => true]);
-    echo $this->Form->input('tags', ['rows' => '3']);
-    echo $this->Form->input('description', ['rows' => '5']);
-    echo $this->Form->button(__('Lưu Sản Phẩm '));
-    echo $this->Form->button(__('Hủy '));
-    echo $this->Form->end();
-?>
+<div id = "content" class = "col-lg-12">
+	<div id = "form-registry" class = "col-xs-12 col-sm-6 col-md-6 col-lg-6 col-lg-offset-3 post"> 
+	<?php echo $this->Form->create($products); ?>
+	<h1 class="text-center">Add Products</h1>
+	<div class="form-group">
+        <label for="usr">Name:</label>
+	    <input type="text" class="form-control" name = "name">
+	</div>
+	<div class="form-group">
+		<label for="sel1">Categories :</label>
+		<?php 
+			foreach ($data as $categories) :
+			$options[$categories->id] = $categories->name;
+			endforeach;
+			echo $this->Form->select('category_id', $options);	
+		?>
+	</div>
+	<div class="form-group">
+		<label for="img">Image Url :</label>
+		<input type="text" class="form-control" name = "image_url">
+	</div>
+	<div class="form-group">
+	    <label for="price">Price :</label>
+		<input type="text" class="form-control" name = "price">
+	</div>
+	<div class="form-group">
+	    <label for="quantity">Quantity :</label>
+		<input type="text" class="form-control" name = "quantity">
+	</div>
+	<div class="form-group">
+	    <label for="status">Status :</label>
+		<?php 
+			$options = ['0' => 'Hết Hàng', '1' => 'Còn Hàng'];
+			echo $this->Form->select('status', $options);
+		?>
+	</div>
+	<div class="form-group">
+	    <label for="tags">Tags :</label>
+		<textarea class="form-control" rows="3"  name = "tags"></textarea>
+	</div>
+	<div class="form-group">
+	    <label for="descriptions">Description :</label>
+		<textarea class="form-control" rows="5"  name = "description"></textarea>
+	</div>
+	<button type="submit" class="btn btn-default">Add Products</button>
+	<?= $this->Form->end() ?>
+	</div>
 </div>
-</body>
-</html>
