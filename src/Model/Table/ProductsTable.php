@@ -1,38 +1,76 @@
 <?php
 namespace App\Model\Table;
 
+use Cake\ORM\Query;
+use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
-use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
-class ProductsTable extends Table {
-	public function initialize(array $config) {	
-		$this->hasOne('Categories');
-	}
 
-	public function validationDefault(Validator $validator) {
+class ProductsTable extends Table {
+
+    public function initialize(array $config) {
+        parent::initialize($config);
+
+        $this->table('products');
+        $this->displayField('name');
+        $this->primaryKey('id');
+
+        $this->belongsTo('Creators', [
+            'foreignKey' => 'creator_id',
+            'joinType' => 'INNER'
+        ]);
+        $this->belongsTo('Categories', [
+            'foreignKey' => 'category_id',
+            'joinType' => 'INNER'
+        ]);
+        $this->hasMany('OrderProduct', [
+            'foreignKey' => 'product_id'
+        ]);
+        $this->hasMany('ProductReviews', [
+            'foreignKey' => 'product_id'
+        ]);
+    }
+    public function validationDefault(Validator $validator) {
         $validator
-            ->notEmpty('name')
+            ->integer('id')
+            ->allowEmpty('id', 'create');
+
+        $validator
             ->requirePresence('name')
-            ->notEmpty('category_id')
-            ->requirePresence('category_id')
-            ->notEmpty('image_url')
-            ->requirePresence('image_url')
-            ->notEmpty('price')
-            ->requirePresence('price')
-            ->notEmpty('quantity')
-            ->requirePresence('quantity')
-            ->notEmpty('status')
-            ->requirePresence('status')
-            ->notEmpty('tags')
-            ->requirePresence('tags')
-            ->notEmpty('description')
-            ->requirePresence('description');
+            ->notEmpty('name');
+
+        $validator
+			->requirePresence('image_url')
+            ->notEmpty('image_url');
+
+        $validator
+            ->requirePresence('description')
+            ->notEmpty('description');
+
+        $validator
+            ->numeric('price')
+            ->allowEmpty('price');
+
+        $validator
+            ->integer('quantity')
+            ->allowEmpty('quantity');
+
+        $validator
+            ->allowEmpty('tags');
+
+        $validator
+            ->boolean('status')
+            ->requirePresence('status', 'create')
+            ->notEmpty('status');
+
         return $validator;
     }
-	public function getDataOrder() {
-		$sql = 'SELECT product_id, quantity FROM `order_product` ORDER BY quantity DESC LIMIT 5';
-		$result = $this->query($sql);
-		return $result;
-	}
+
+    public function buildRules(RulesChecker $rules) {
+        /* $rules->add($rules->existsIn(['creator_id'], 'Creators')); */
+        $rules->add($rules->isUnique(['name']));
+
+        return $rules;
+    }
 }

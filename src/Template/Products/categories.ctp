@@ -1,32 +1,25 @@
 	<!-- Content -->
 <div id = "content" class = "col-lg-12">
-	<div id = "products" class = "col-lg-12 post">
-		<div class = "well well-lg">	
-			<h3 class = "text-center">
-				<?php foreach($get_name as $category) :
-				echo $category->name;	
-		 	?>
-			</h3>
-		</div>
+	<div id = "products" class = "well well-lg col-lg-12 post">
+			<h2 class = "text-center ">
+				<?php foreach($info_category as $category) :
+					echo $category->name;	?>
+			</h2>
 	 	<h3>Description :</h3>
 	 	<p>
 	 		<?php echo $category->description;
-				endforeach;
-	 	 	?>	
+				endforeach; ?>
 	 	</p>
-		<?php foreach ($data1 as $products) { ?>
+		<?php foreach ($products as $products) { ?>
 		<div id = "one-item" class="col-xs-12 col-sm-3 col-md-3 col-lg-3 col-lg-offset-1 post">
-			<?php echo $this->Html->image("saoviet/$products->image_url",['url' => ['action' => 'detail',$products->id]]); ?>
-			<p class="bg-primary"><?= $products->name ?></p>
-			<p class="price">Giá : <?= $products->price ?> VNĐ</p>
-			<?php 
-				echo $this->Html->link('Add To Cart',[
-					'controller'=>'products',
-					'action'=>'checkout',
-					'escape'=> false
-					],
-					['class'=>'btn btn-sm btn-info']
-				);
+			<?php echo $this->Html->image("saoviet/$products->image_url",[
+				'url' => ['action' => 'detail', $products->id], 'class' => 'img-rounded']);
+			?>
+			<p class = "text-center"><strong><?= $products->name ?></strong></p>
+			<p class = "btn btn-danger">Giá : <?= $products->price ?> VNĐ</p>
+			<?php echo $this->Html->link('
+				<span class="glyphicon glyphicon-shopping-cart"></span>
+		 		Add To Cart',['controller'=>'products', 'action'=>'checkout',$products->id],array('class'=>'btn btn-sm btn-info', 'escape'=> false));
 			?>
 		</div>
 		<?php } ?>

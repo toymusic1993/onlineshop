@@ -1,9 +1,41 @@
 <?php
 return [
-    
+    /**
+     * Debug Level:
+     *
+     * Production Mode:
+     * false: No error messages, errors, or warnings shown.
+     *
+     * Development Mode:
+     * true: Errors and warnings shown.
+     */
     'debug' => filter_var(env('DEBUG', true), FILTER_VALIDATE_BOOLEAN),
 
-    
+    /**
+     * Configure basic information about the application.
+     *
+     * - namespace - The namespace to find app classes under.
+     * - defaultLocale - The default locale for translation, formatting currencies and numbers, date and time.
+     * - encoding - The encoding used for HTML + database connections.
+     * - base - The base directory the app resides in. If false this
+     *   will be auto detected.
+     * - dir - Name of app directory.
+     * - webroot - The webroot directory.
+     * - wwwRoot - The file path to webroot.
+     * - baseUrl - To configure CakePHP to *not* use mod_rewrite and to
+     *   use CakePHP pretty URLs, remove these .htaccess
+     *   files:
+     *      /.htaccess
+     *      /webroot/.htaccess
+     *   And uncomment the baseUrl key below.
+     * - fullBaseUrl - A base URL to use for absolute links.
+     * - imageBaseUrl - Web path to the public images directory under webroot.
+     * - cssBaseUrl - Web path to the public css directory under webroot.
+     * - jsBaseUrl - Web path to the public js directory under webroot.
+     * - paths - Configure paths for non class based resources. Supports the
+     *   `plugins`, `templates`, `locales` subkeys, which allow the definition of
+     *   paths for plugins, view templates and locale files respectively.
+     */
     'App' => [
         'namespace' => 'App',
         'encoding' => env('APP_ENCODING', 'UTF-8'),
@@ -24,17 +56,32 @@ return [
         ],
     ],
 
-   
+    /**
+     * Security and encryption configuration
+     *
+     * - salt - A random string used in security hashing methods.
+     *   The salt value is also used as the encryption key.
+     *   You should treat it as extremely sensitive data.
+     */
     'Security' => [
-        'salt' => env('SECURITY_SALT', '__SALT__'),
+        'salt' => env('SECURITY_SALT', '306dceef7c197c223c7e24ebb752d0339dc3f8a8d78f3b057dc20fa56d8dbc45'),
     ],
 
-    
+    /**
+     * Apply timestamps with the last modified time to static assets (js, css, images).
+     * Will append a querystring parameter containing the time the file was modified.
+     * This is useful for busting browser caches.
+     *
+     * Set to true to apply timestamps when debug is true. Set to 'force' to always
+     * enable timestamping regardless of debug value.
+     */
     'Asset' => [
         // 'timestamp' => true,
     ],
 
-   
+    /**
+     * Configure the cache adapters.
+     */
     'Cache' => [
         'default' => [
             'className' => 'File',
@@ -42,7 +89,12 @@ return [
             'url' => env('CACHE_DEFAULT_URL', null),
         ],
 
-        
+        /**
+         * Configure the cache used for general framework caching.
+         * Translation cache files are stored with this configuration.
+         * Duration will be set to '+2 minutes' in bootstrap.php when debug = true
+         * If you set 'className' => 'Null' core cache will be disabled.
+         */
         '_cake_core_' => [
             'className' => 'File',
             'prefix' => 'myapp_cake_core_',
@@ -52,7 +104,12 @@ return [
             'url' => env('CACHE_CAKECORE_URL', null),
         ],
 
-        
+        /**
+         * Configure the cache for model and datasource caches. This cache
+         * configuration is used to store schema descriptions, and table listings
+         * in connections.
+         * Duration will be set to '+2 minutes' in bootstrap.php when debug = true
+         */
         '_cake_model_' => [
             'className' => 'File',
             'prefix' => 'myapp_cake_model_',
@@ -63,7 +120,35 @@ return [
         ],
     ],
 
-    
+    /**
+     * Configure the Error and Exception handlers used by your application.
+     *
+     * By default errors are displayed using Debugger, when debug is true and logged
+     * by Cake\Log\Log when debug is false.
+     *
+     * In CLI environments exceptions will be printed to stderr with a backtrace.
+     * In web environments an HTML page will be displayed for the exception.
+     * With debug true, framework errors like Missing Controller will be displayed.
+     * When debug is false, framework errors will be coerced into generic HTTP errors.
+     *
+     * Options:
+     *
+     * - `errorLevel` - int - The level of errors you are interested in capturing.
+     * - `trace` - boolean - Whether or not backtraces should be included in
+     *   logged errors/exceptions.
+     * - `log` - boolean - Whether or not you want exceptions logged.
+     * - `exceptionRenderer` - string - The class responsible for rendering
+     *   uncaught exceptions. If you choose a custom class you should place
+     *   the file for that class in src/Error. This class needs to implement a
+     *   render method.
+     * - `skipLog` - array - List of exceptions to skip for logging. Exceptions that
+     *   extend one of the listed exceptions will also be skipped for logging.
+     *   E.g.:
+     *   `'skipLog' => ['Cake\Network\Exception\NotFoundException', 'Cake\Network\Exception\UnauthorizedException']`
+     * - `extraFatalErrorMemory` - int - The number of megabytes to increase
+     *   the memory limit by when a fatal error is encountered. This allows
+     *   breathing room to complete logging or error handling.
+     */
     'Error' => [
         'errorLevel' => E_ALL,
         'exceptionRenderer' => 'Cake\Error\ExceptionRenderer',
@@ -72,7 +157,25 @@ return [
         'trace' => true,
     ],
 
-    
+    /**
+     * Email configuration.
+     *
+     * By defining transports separately from delivery profiles you can easily
+     * re-use transport configuration across multiple profiles.
+     *
+     * You can specify multiple configurations for production, development and
+     * testing.
+     *
+     * Each transport needs a `className`. Valid options are as follows:
+     *
+     *  Mail   - Send using PHP mail function
+     *  Smtp   - Send using SMTP
+     *  Debug  - Do not send the email, just return the result
+     *
+     * You can add custom transports (or override existing transports) by adding the
+     * appropriate file to src/Mailer/Transport. Transports should be named
+     * 'YourTransport.php', where 'Your' is the name of the transport.
+     */
     'EmailTransport' => [
         'default' => [
             'className' => 'Mail',
@@ -88,7 +191,15 @@ return [
         ],
     ],
 
-    
+    /**
+     * Email delivery profiles
+     *
+     * Delivery profiles allow you to predefine various properties about email
+     * messages from your application and give the settings a name. This saves
+     * duplication across your application and makes maintenance and development
+     * easier. Each profile accepts a number of keys. See `Cake\Mailer\Email`
+     * for more information.
+     */
     'Email' => [
         'default' => [
             'transport' => 'default',
@@ -98,7 +209,14 @@ return [
         ],
     ],
 
-    
+    /**
+     * Connection information used by the ORM to connect
+     * to your application's datastores.
+     * Do not use periods in database name - it may lead to error.
+     * See https://github.com/cakephp/cakephp/issues/6471 for details.
+     * Drivers include Mysql Postgres Sqlite Sqlserver
+     * See vendor\cakephp\cakephp\src\Database\Driver for complete list
+     */
     'Datasources' => [
         'default' => [
             'className' => 'Cake\Database\Connection',

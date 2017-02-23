@@ -1,11 +1,10 @@
-﻿	<h1 class="text-center">Admin Login</h1>
+﻿<div id = "content" class = "well well-lg col-xs-12 col-sm-6 col-md-6 col-lg-6 col-lg-offset-3 post">
+	<h1 class="text-center">User Login</h1>
 	<div class="users form">
-	    <?= $this->Form->create
-          ('login', array('type' => 'post')); ?>
-    	<fieldset>
-	        <?= $this->Form->input('email') ?>
-	        <?= $this->Form->input('password') ?>
-    	</fieldset>
-		<?= $this->Form->submit('Login',array('class'=>'button')); ?>
-		<?= $this->Form->end() ?>
+	<?= $this->Form->create() ?>
+	<?= $this->Form->input('email') ?>
+	<?= $this->Form->input('password') ?>
+	<?= $this->Form->button(__('Login')); ?>
+	<?= $this->Form->end() ?>
     </div>
+</div>

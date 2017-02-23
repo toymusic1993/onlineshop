@@ -1,26 +1,46 @@
 <?php
 namespace App\Model\Table;
 
+use Cake\ORM\Query;
+use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
-use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
-class UsersTable extends Table {
-	public function initialize(array $config) {
-		$this->table('users');
-        $this->entityClass('App\Model\Entity\user');
-        $this->addBehavior('Timestamp');
-	}
 
-	public function validationDefault(Validator $validator) {
+class UsersTable extends Table {
+    public function initialize(array $config) {
+        parent::initialize($config);
+
+        $this->table('users');
+        $this->displayField('name');
+        $this->primaryKey('id');
+
+        $this->hasMany('Orders', [
+            'foreignKey' => 'user_id'
+        ]);
+        $this->hasMany('ProductReviews', [
+            'foreignKey' => 'user_id'
+        ]);
+    }
+
+    public function validationDefault(Validator $validator) {
+      
         $validator
-            ->notEmpty('name')
             ->requirePresence('name')
-            ->notEmpty('password')
+            ->notEmpty('name');
+
+        $validator
+            ->email('email')
+            ->allowEmpty('email');
+
+        $validator
             ->requirePresence('password')
-            ->notEmpty('email')
-            ->requirePresence('email');
+            ->notEmpty('password');
         return $validator;
     }
-    
+	
+    public function buildRules(RulesChecker $rules) { // check email exists
+        $rules->add($rules->isUnique(['email']));
+        return $rules;
+    }
 }

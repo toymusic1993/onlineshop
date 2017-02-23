@@ -1,5 +1,17 @@
 <?php
-
+/**
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ *
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link      http://cakephp.org CakePHP(tm) Project
+ * @since     3.3.0
+ * @license   http://www.opensource.org/licenses/mit-license.php MIT License
+ */
 namespace App;
 
 use Cake\Core\Configure;
@@ -27,13 +39,13 @@ class Application extends BaseApplication
         $middleware
             // Catch any exceptions in the lower layers,
             // and make an error page/response
-            ->add(new ErrorHandlerMiddleware(Configure::read('Error.exceptionRenderer')))
+            ->add(ErrorHandlerMiddleware::class)
 
             // Handle plugin/theme assets like CakePHP normally does.
-            ->add(new AssetMiddleware())
+            ->add(AssetMiddleware::class)
 
             // Apply routing
-            ->add(new RoutingMiddleware());
+            ->add(RoutingMiddleware::class);
 
         return $middleware;
     }

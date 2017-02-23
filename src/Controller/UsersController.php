@@ -3,28 +3,31 @@ namespace App\Controller;
 
 use Cake\ORM\TableRegistry;
 use Cake\ORM\Table;
-
+use Cake\Event\Event;
 
 class UsersController extends AppController {
-	public function initialize() {
-        parent::initialize();
-        $this->loadComponent('Flash'); // Include the FlashComponent
-    }
 	
+	public function beforeFilter(Event $event) {
+        parent::beforeFilter($event);
+        // Allow users to register and logout.
+        // You should not add the "login" action to allow list. Doing so would
+        // cause problems with normal functioning of AuthComponent.
+        $this->Auth->allow(['registry']);
+    }
 	// Registry
 	public function registry() {
 		$this->loadModel('Categories');
-		$query = $this->Categories->find();
-		$this->set('data', $query);
+		$list_category = $this->Categories->find();
+		$this->set('list_category', $list_category);
 		
 	    $users = $this->Users->newEntity();
 		if ($this->request->is('post')){
 		    $users = $this->Users->patchEntity($users,$this->request->data);
-			if ($this->Users->save($users)){
-			    $this->Flash->success(__('Đăng Kí Thành Công.'));
+			if ($this->Users->save($users)) {
+			    $this->Flash->success(__('Register Done'));
                 return $this->redirect(['controller'=>'products','action' => 'index']);
 			}
-		   	$this->Flash->error(__('Đăng Kí Thất Bại.'));
+		   	$this->Flash->error(__('Register Fail'));
 		}
 		$this->set('users', $users);
 	}
@@ -32,8 +35,8 @@ class UsersController extends AppController {
 	// Admin Home
 	public function adminHome() {
 		$this->loadModel('Categories');
-		$query = $this->Categories->find();
-		$this->set('data', $query);
+		$list_category = $this->Categories->find();
+		$this->set('list_category', $list_category);
 		
 	    $this->paginate = array('limit' => 10);
 		$list_orders = $this->paginate('Orders');
@@ -64,8 +67,9 @@ class UsersController extends AppController {
 	// Admin Products
 	public function adminProducts() {
 		$this->loadModel('Categories');
-		$query = $this->Categories->find();
-		$this->set('data', $query);
+		$list_category = $this->Categories->find();
+		$this->set('list_category', $list_category);
+		
 		$this->paginate = array('limit' => 10);
 		$list_products = $this->paginate('Products');
 		$this->set('data1', $list_products);	
@@ -81,8 +85,8 @@ class UsersController extends AppController {
 	// Users
 	public function adminUsers() {
 		$this->loadModel('Categories');
-		$query = $this->Categories->find();
-		$this->set('data', $query);
+		$list_category = $this->Categories->find();
+		$this->set('list_category', $list_category);
 		
 		$this->paginate = array('limit' => 10);
 		$list_users = $this->paginate('Users');
@@ -92,15 +96,15 @@ class UsersController extends AppController {
 	//Add Users
 	public function addUsers() {
 		$this->loadModel('Categories');
-		$query = $this->Categories->find();
-		$this->set('data', $query);
+		$list_category = $this->Categories->find();
+		$this->set('list_category', $list_category);
 		
 		$users = $this->Users->newEntity();
 		if ($this->request->is('post')) {
 			$users = $this->Users->patchEntity($users, $this->request->data);
 			if ($this->Users->save($users)) {
 				$this->Flash->success(__('Thêm Tài Khoản Thành Công'));
-				return $this->redirect(['action'=>'adminUsers']);
+				return $this->redirect(['action'=>'adminusers']);
 			}
 			$this->Flash->error(__('Thêm Tài Khoản Thất Bại'));
 		}
@@ -110,15 +114,15 @@ class UsersController extends AppController {
 	// Edit Users
 	public function editUsers($id = null) {
 		$this->loadModel('Categories');
-		$query = $this->Categories->find();
-		$this->set('data', $query);
+		$list_category = $this->Categories->find();
+		$this->set('list_category', $list_category);
 		
         $users = $this->Users->get($id);
         if ($this->request->is(['post', 'put'])) {
             $this->Users->patchEntity($users, $this->request->data);
             if ($this->Users->save($users)) {
                 $this->Flash->success(__('Fix Done'));
-                return $this->redirect(['action' => 'adminUsers']);
+                return $this->redirect(['action' => 'adminusers']);
             }
 			$this->Flash->error(__('Fix Fail'));
         }
@@ -131,21 +135,34 @@ class UsersController extends AppController {
 		$users = $this->Users->get($id);
 		if ($this->Users->delete($users)) {
 		    $this->Flash->success(__('User has ID : {0} is deleted.', h($id)));
-        	return $this->redirect(['action' => 'adminUsers']);
+        	return $this->redirect(['action' => 'adminusers']);
 		}
 	}
 	
 	//Admin Login
-	public function login() {
+	public function adminlogin() {
 	    if ($this->request->is('post')) {
 		    $user = $this->Auth->identify();
 			if ($user) {
 				$this->Auth->setUser($user);
-				return $this->redirect(['controller'=>'users','action'=>'adminhome']);
+				return $this->redirect(['controller' => 'users', 'action'=>'adminhome']);
 			}
 				return $this->Flash->error(__('Sai Thông Tin Đăng Nhập'));
 		}
 	}
+	public function login() {
+	    if ($this->request->is('post')) {
+		    $user = $this->Auth->identify();
+			// pr($_POST);
+			// die();
+			if ($user) {
+				$this->Auth->setUser($user);	
+				return $this->redirect(['controller' => 'products', 'action' => 'index']);
+			}
+			return $this->Flash->error(__('Invalid Email Or Password'));
+		}
+	}
+	
 }
 	
 	

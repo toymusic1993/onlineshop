@@ -1,44 +1,51 @@
-<div class="container">	
+<div id = "content" class="container col-lg-12">
+	<div id = "form-edit-products" class = "well well-lg col-xs-12 col-sm-6 col-md-6 col-lg-6 col-lg-offset-3 post">
 	<h1 class="text-center">Edit Products</h1>
-	<?php echo $this->Form->create($products); ?>
+	<?php echo $this->Form->create(); ?>
 	<div class = "form-group">
-		<?php echo $this->Form->input('name',array (['class'=>'form-control']));?>
+		<label for="usr">Name</label>
+		<input type="text" class="form-control" name="name" value = "<?php echo $products->name ?>">
 	</div>
 	
     <div class = "form-group">
 		<label for="sel1">Categories :</label>
 		<?php 
-			foreach ($data as $categories) :
+			foreach ($list_category as $categories) :
 			$options[$categories->id] = $categories->name;
 			endforeach;
-			echo $this->Form->select('category_id', $options);	
+			echo $this->Form->select('category_id', $options, array('class' => 'form-control') );	
 		?>
 	</div>
 	
 	<div class = "form-group">
-		<?php echo $this->Form->input('image_url',array (['class'=>'form-control'])); ?>
+		<label for="usr">Image Url</label>
+		<input type="text" class="form-control" name="image_url" value = "<?php echo $products->image_url ?>">
 	</div>
 	
 	<div class = "form-group">
-		<?php echo $this->Form->input('price'); ?>
+		<label for="usr">Price</label>
+		<input type="text" class="form-control" name="price" value = "<?php echo $products->price ?>">
 	</div>
 	
 	<div class = "form-group">
-		<?php echo $this->Form->input('quantity'); ?>
+		<label for="usr">Quantity</label>
+		<input type="number" class="form-control" name="quantity" value = "<?php echo $products->quantity ?>">
 	</div>
 	
 	<div class="form-group">
 	    <label for="status">Status :</label>
 		<?php 
 			$options = ['0' => 'Hết Hàng', '1' => 'Còn Hàng'];
-			echo $this->Form->select('status', $options);
+			echo $this->Form->select('status', $options, array('class' => 'form-control'));
 		?>
 	</div>
 	<div class="form-group">
-		<?php echo nl2br($this->Form->input('tags', ['rows' => '3'])); ?>
+		<label for="tags">Tags</label>
+		<textarea class="form-control" rows="3" name="tags"><?= $products->tags ?></textarea>
 	</div>
 	<div class="form-group">
-		<?php echo nl2br($this->Form->input('description', ['rows' => '5'])); ?>
+		<label for="tags">Description</label>
+		<textarea class="form-control" rows="3" name="description"><?= $products->description ?></textarea>
 	</div>
 	
     <button type="submit" class="btn btn-warning">Edit Products</button>

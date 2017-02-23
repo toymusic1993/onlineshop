@@ -11,7 +11,7 @@
     <?= $this->Html->meta('icon') ?>
     <?= $this->Html->css('bootstrap.min') ?>
    
-	<?= $this->Html->css('style.css') ?>
+	<?= $this->Html->css('style') ?>
 	<?= $this->Html->script(['jquery-3.1.1.min','bootstrap.min']) ?>
 	
     <?= $this->fetch('meta') ?>
@@ -19,9 +19,9 @@
     <?= $this->fetch('script') ?>
 </head>
 <body>
-<div id="header" class = "col-lg-12">
-	<nav class="navbar navbar-inverse">
-		<div class="container-fluid">
+<div id = "header" class = "col-lg-12">
+	<nav class = "navbar navbar-inverse">
+		<div class = "container-fluid">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
 					<span class="icon-bar"></span>
@@ -35,7 +35,7 @@
 				<ul class="nav navbar-nav">
 					<li><?= $this->Html->link('Trang Chủ', ['controller'=>'products','action' => 'index']) ?></li>
 					<li class = "dropdown">
-						<a class = "dropdown-toggle" data-toggle = "dropdown">Các Loại Sáo <span class="caret"></span></a>
+						<a href = "" class = "dropdown-toggle" data-toggle = "dropdown">Các Loại Sáo <span class="caret"></span></a>
 						<ul class="dropdown-menu">
 						<?php foreach ($list_category as $categories) : ?>
 							<li> 
@@ -69,7 +69,7 @@
 	</nav>
 </div>
 <?= $this->Flash->render() ?>
-<section class="container-fluid">
+<section class = "container-fluid">
 	<?= $this->fetch('content') ?>
 </section>
 <footer>

@@ -1,22 +1,20 @@
-<style>
-	#image-item {
-		
-	}
-	#image-item img {
-		width : 600px;
-	}
-</style>
 <div id = "head-content" class = "col-lg-12">
 	<div id = "infomation" class = "col-xs-12 col-sm-9 col-md-9 col-lg-9 post">
 		<div id = "image-item" class = "col-xs-12 col-sm-6 col-md-6 col-lg-6 post">
-			<?php echo $this->Html->image("saoviet/$products->image_url"); ?>
+			<?php echo $this->Html->image("saoviet/$products->image_url",['class' => 'img-rounded']); ?>
 		</div>
 		<div id ="info-item" class = "col-xs-12 col-sm-6 col-md-6 col-lg-6 post">
-			<h3 class = "text-primaty"><?= $products->name ?></h3>
+			<h2 class = "lead"><?= $products->name ?> <?php if($products->status == 0 ) {
+				echo "(Hết Hàng)"; } ?></h2>
 			<p class = "text-primary">Price : <?= $products->price ?> VNĐ</p>
 			<h4>Description :</h4>
-			<p><?php echo nl2br($products->description) ?></p>
-			<button class="btn btn-default btn-style">Add To Cart</button>
+			<div class = "well well-lg"> 
+				<p><?php echo nl2br($products->description) ?></p>
+			</div>
+			<?php echo $this->Html->link('
+				<span class="glyphicon glyphicon-shopping-cart"></span>
+		 		Add To Cart',['controller'=>'products', 'action'=>'checkout',$products->id],array('class'=>'btn btn-sm btn-info', 'escape'=> false));
+			?>
 			<button class="btn btn-default btn-style" data-toggle="modal" data-target="#myModal">Write Review</button>
 
 			<!-- Modal -->
@@ -39,58 +37,58 @@
 			</div>
 		</div>
 	</div>
-	<div id = "review-users" class = "col-xs-12 col-sm-3 col-md-3 col-lg-3 post">
+	<div id = "review-users" class = "well well-lg col-xs-12 col-sm-3 col-md-3 col-lg-3 post">
 		<h2 class = "text-center">Review Users</h2>
 		<div class = "review">
-			<?php foreach ($result as $get_data) : ?>
+			<?php foreach ($review_data as $get_data) : ?>
 			<p class="text-primary"><?php echo $get_data->comment; ?></p>
 			<p>
 				<?php if ($get_data->rate == 1) {
 					echo '<span class="glyphicon glyphicon-star"></span>';
 				} else if ($get_data->rate == 2) {
-					echo 
+					echo
 						'<span class="glyphicon glyphicon-star"></span>
 						 <span class="glyphicon glyphicon-star"></span>
-					';
+						';
 				} else if ($get_data->rate == 3) {
-					echo 
+					echo
 						'<span class="glyphicon glyphicon-star"></span>
 						 <span class="glyphicon glyphicon-star"></span>
 						 <span class="glyphicon glyphicon-star"></span>
 					';
 				} else if ($get_data->rate == 4) {
-					echo 
+					echo
 						'<span class="glyphicon glyphicon-star"></span>
 						 <span class="glyphicon glyphicon-star"></span>
 						 <span class="glyphicon glyphicon-star"></span>
 						 <span class="glyphicon glyphicon-star"></span>
 					';
 				} else if ($get_data->rate == 5) {
-					echo 
+					echo
 						'<span class="glyphicon glyphicon-star"></span>
 						 <span class="glyphicon glyphicon-star"></span>
 						 <span class="glyphicon glyphicon-star"></span>
 						 <span class="glyphicon glyphicon-star"></span>
 						 <span class="glyphicon glyphicon-star"></span>
-					';
+						';
 				}
-				?></p>
+				?>
+			</p>
 			<?php endforeach; ?>
 		</div>
 	</div>
 </div>
-<div id = "bottom-content" class = "col-lg-12">
-	<h3 class = "text-center">Related Products</h3>
-	<!-- <?php foreach ($related_products as $items) { ?>
-		<div id = "one-item" class="col-xs-12 col-sm-2 col-md-2 col-lg-2 col-lg-offset-1 post">
-			<?php echo $this->Html->image("saoviet/$items->image_url",['url' => ['action' => 'detail',$products->id]]); ?>
-			<p class = "bg-primary"><?= $items->name ?></p>
-			<p class = "price">Giá : <?= $items->price ?> VNĐ</p>	
-			<?php echo $this->Html->link('
-				<span class="glyphicon glyphicon-shopping-cart"></span>
-		 		Add To Cart', ['controller' => 'products', 'action' => 'checkout', $items->id], array('class' => 'btn btn-sm btn-info', 'escape'=> false));
-			?>
-		</div>
-		<?php } ?> -->
-		
+<div id = "bottom-content" class = "well well-lg col-lg-12">
+	<h3 class = "text-center">Same Products</h3>
+	<?php foreach ($same_products as $items) { ?>
+	<div id = "same-item" class="col-xs-12 col-sm-2 col-md-2 col-lg-2">
+		<?php echo $this->Html->image("saoviet/$items->image_url",['url' => ['action' => 'detail',$items->id], 'class' => 'img-rounded']); ?>
+		<p class = "text-center"><?= $items->name ?> </p>
+		<p class = "btn btn-danger">Giá : <?= $items->price ?> VNĐ</p>
+		<?php echo $this->Html->link('
+			<span class="glyphicon glyphicon-shopping-cart"></span>
+			Add To Cart', ['controller' => 'products', 'action' => 'checkout', $items->id], array('class' => 'btn btn-sm btn-info', 'escape'=> false));
+		?>
+	</div>
+	<?php } ?>
 </div>

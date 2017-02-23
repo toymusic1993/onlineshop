@@ -22,7 +22,7 @@
 			</li>
 		</ul>
 	</div>
-	
+
 	<div id = " table-content " class = " col-xs-12 col-sm-9 col-md-9 col-lg-9 post ">
 		<table class = "table table-hover table-bordered">
 		<h2 class = "text-center">List Users </h2>
@@ -60,5 +60,5 @@
 				<?= $this->Paginator->last('Last'); ?>
 			</ul>
 		</div>
-	</div>		
+	</div>
 </div>

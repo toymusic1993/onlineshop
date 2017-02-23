@@ -1,5 +1,5 @@
-<div id = "content" class = "col-lg-12">
-	<div id = "form-registry" class = "col-xs-12 col-sm-6 col-md-6 col-lg-6 col-lg-offset-3 post"> 
+<div id = "content" class = "well well-lg col-xs-12 col-sm-6 col-md-6 col-lg-6 col-lg-offset-3 post">
+	<div id = "form-registry"> 
 	<?php echo $this->Form->create('registry'); ?>
 	<h1 class="text-center">Registry</h1>
 	<div class="form-group">
